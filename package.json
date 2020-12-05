@@ -1,0 +1,17 @@
+{
+  "name": "advent-of-code-2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project .",
+    "start": "tsc --project --watch ."
+  },
+  "author": "Stephan Baumeister <stephan@baumeister.name>",
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.0",
+    "@types/node": "^14.14.10",
+    "typescript": "^4.1.2"
+  }
+}
