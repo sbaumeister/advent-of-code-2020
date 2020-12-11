@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --project .",
-    "start": "tsc --project --watch ."
+    "start": "tsc --watch --project ."
   },
   "author": "Stephan Baumeister <stephan@baumeister.name>",
   "license": "GPL-3.0-only",
