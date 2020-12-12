@@ -56,14 +56,14 @@ function isValidYear(value: string, min: number, max: number) {
 }
 
 function isValidHeight(value: string) {
-    const matches = value.match(/([0-9]{3})(cm|in)/)
+    const matches = value.match(/([0-9]{2,3})(cm|in)/)
     if (matches) {
-        const val = parseInt(matches[1])
+        const intVal = parseInt(matches[1])
         if (matches[2] == 'cm') {
-            return val >= 150 && val <= 193
+            return intVal >= 150 && intVal <= 193
         }
         if (matches[2] == 'in') {
-            return val >= 59 && val <= 76
+            return intVal >= 59 && intVal <= 76
         }
     }
     return false
@@ -78,7 +78,7 @@ function isValidEyeColor(value: string) {
 }
 
 function isValidPassportId(value: string) {
-    return value.match(/[0-9]{9}/) !== null
+    return value.length == 9 && value.match(/[0-9]{9}/) !== null
 }
 
 function countValidPassportsPart2() {
@@ -93,7 +93,10 @@ function countValidPassportsPart2() {
             isValidEyeColor(passport.ecl || '') &&
             isValidPassportId(passport.pid || '')
         ) {
+            // console.log(`+ Valid passport: ${JSON.stringify(passport)}`)
             countValidPassports++
+        } else {
+            // console.log(`- Invalid passport: ${JSON.stringify(passport)}`)
         }
     }
     return countValidPassports;
@@ -103,4 +106,4 @@ const countPart1 = countValidPassportsPart1();
 console.log(`Part 1: count valid passports = ${countPart1}`)
 
 const countPart2 = countValidPassportsPart2();
-console.log(`Part 1: count valid passports = ${countPart2}`)
+console.log(`Part 2: count valid passports = ${countPart2}`)
