@@ -1,25 +1,47 @@
 import {readFileSync} from 'fs'
 import path from "path"
 
-interface Rule {
-    name: string,
-    childs: { count: number, name?: string }[]
+const rawRules: string[] = readFileSync(path.resolve(__dirname, 'input.txt')).toString()
+    .split('\n')
+type Bag = { count: number, name: string };
+const ruleMap = new Map<string, Bag[]>()
+for (const r of rawRules) {
+    const ruleMatches = r.match(/(?<color>.+)\sbags contain\s(?<bags>.+)\./)
+    const color = ruleMatches?.groups?.color || ''
+    const rawBags = ruleMatches?.groups?.bags || ''
+    const bagMatches = rawBags.matchAll(/(?<count>[0-9]+) (?<name>[a-z ]+) bags?/g);
+    const bags = []
+    for (const bagMatch of bagMatches) {
+        bags.push({
+            count: parseInt(bagMatch.groups?.count || ''),
+            name: bagMatch.groups?.name || ''
+        })
+    }
+    ruleMap.set(color, bags)
+    // console.log(JSON.stringify(r))
 }
 
-const rules: Rule[] = readFileSync(path.resolve(__dirname, 'input.txt')).toString()
-    .split('\n')
-    .map(s => {
-        const matches = s.match(/(?<bag>.+)\sbags contain\s(?<bags>.+)\./)
-        const bag = matches?.groups?.bag || ''
-        const bags = matches?.groups?.bags || ''
-        const r: Rule = {
-            name: bag,
-            childs: []
+function containsShinyGold(bags: Bag[]): boolean {
+    if (bags.map(c => c.name).indexOf('shiny gold') !== -1) {
+        return true
+    }
+    for (const bag of bags) {
+        if (containsShinyGold(ruleMap.get(bag.name) || [])) {
+            return true
         }
-        const childBagMatches = bags.matchAll(/(?<count>[0-9]+) (?<name>[a-z ]+) bags?/g);
-        for (const childBagMatch of childBagMatches) {
-            r.childs.push({ count: parseInt(childBagMatch.groups?.count || ''), name: childBagMatch.groups?.name })
+    }
+    return false
+}
+
+function findColorsContaininggShinyGold() {
+    const resultSet = new Set()
+    for (const [color, bags] of ruleMap) {
+        if (containsShinyGold(bags)) {
+            resultSet.add(color)
         }
-        console.log(JSON.stringify(r))
-        return r
-    })
+    }
+    return resultSet;
+}
+
+const colorsContainingShinyGold = findColorsContaininggShinyGold();
+console.log(`Part 1: ${colorsContainingShinyGold.size} colors contain shiny gold`)
