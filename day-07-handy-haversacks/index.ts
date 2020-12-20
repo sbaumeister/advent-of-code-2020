@@ -43,5 +43,20 @@ function findColorsContaininggShinyGold() {
     return resultSet;
 }
 
+function countBagsInsideShinyGold() {
+    const shinyGoldBags = ruleMap.get('shiny gold') || []
+    function countRecursive(bags: Bag[]): number {
+        let count = 0
+        for (const bag of bags) {
+            count += bag.count
+            count += bag.count * countRecursive(ruleMap.get(bag.name) || [])
+        }
+        return count
+    }
+    return countRecursive(shinyGoldBags)
+}
+
 const colorsContainingShinyGold = findColorsContaininggShinyGold();
 console.log(`Part 1: ${colorsContainingShinyGold.size} colors contain shiny gold`)
+
+console.log(`Part 2: ${countBagsInsideShinyGold()} bags inside shiny gold`)
