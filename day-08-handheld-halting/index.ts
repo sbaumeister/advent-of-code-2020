@@ -57,8 +57,7 @@ function executeProgram(): boolean {
 function switchInstructionType(instruction: Instruction) {
     if (instruction.type == 'nop') {
         instruction.type = 'jmp'
-    }
-    if (instruction.type == 'jmp') {
+    } else if (instruction.type == 'jmp') {
         instruction.type = 'nop'
     }
 }
@@ -66,12 +65,14 @@ function switchInstructionType(instruction: Instruction) {
 function part2() {
     for (const [i, instruction] of instructions) {
         if (['nop', 'jmp'].indexOf(instruction.type) != -1) {
-            console.log(`Switch instruction ${i}: ${JSON.stringify(instruction)}`)
+            console.log(`Switch instruction ${i}: original ${JSON.stringify(instruction)}`)
             switchInstructionType(instruction)
+            console.log(`Switch instruction ${i}: first switch ${JSON.stringify(instruction)}`)
             if (executeProgram()) {
                 break;
             }
             switchInstructionType(instruction)
+            console.log(`Switch instruction ${i}: second switch ${JSON.stringify(instruction)}`)
         }
     }
 }
