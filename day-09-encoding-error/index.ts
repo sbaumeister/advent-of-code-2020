@@ -20,5 +20,30 @@ function findInvalidNumber() {
     throw new Error('Could not find invalid number')
 }
 
+function findContiguousNumbersWithTargetSum(targetSum: number): number[] {
+    outer: for (let i = 0; i < numbers.length; i++) {
+        let sum = 0
+        let result = []
+        for (let j = i; j < numbers.length; j++) {
+            sum += numbers[j]
+            result.push(numbers[j])
+            if (sum == targetSum) {
+                return result
+            }
+            if (sum > targetSum) {
+                continue outer
+            }
+        }
+    }
+    throw new Error('Could not find contiguous set of numbers')
+}
+
 const invalidNumberIdx = findInvalidNumber()
-console.log(`Part 1: invalid number = ${numbers[invalidNumberIdx]} (index = ${invalidNumberIdx})`)
+const invalidNumber = numbers[invalidNumberIdx];
+console.log(`Part 1: invalid number = ${invalidNumber} (index = ${invalidNumberIdx})`)
+
+const numberSet = findContiguousNumbersWithTargetSum(invalidNumber);
+const max = Math.max(...numberSet);
+const min = Math.min(...numberSet);
+// console.log(numberSet)
+console.log(`Part 2: smallest number = ${min}, largest number = ${max}, sum = ${min + max}`)
