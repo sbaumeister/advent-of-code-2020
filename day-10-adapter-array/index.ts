@@ -1,25 +1,41 @@
 import {readFileSync} from 'fs'
 import path from "path"
 
-let joltage = 0
-let countOneJoltDiff = 0
-let countThreeJoltDiff = 1
-
 const adapters = readFileSync(path.resolve(__dirname, 'input.txt')).toString()
     .split('\n')
     .filter(s => s.length > 0)
     .map(s => parseInt(s))
     .sort((a, b) => a - b)
-    .forEach(a => {
-        const diff = a - joltage
-        // console.log(`adapter = ${a}, joltage = ${joltage}, diff = ${diff}`)
-        if (diff <= 3) {
-            diff == 1 && countOneJoltDiff++
-            diff == 3 && countThreeJoltDiff++
-        } else {
-            throw new Error('Could not find adpater chain')
-        }
-        joltage = a
-    })
+adapters.unshift(0)
+adapters.push(adapters[adapters.length - 1] + 3)
 
-console.log(`Part 1: ${countOneJoltDiff} * ${countThreeJoltDiff} = ${countOneJoltDiff * countThreeJoltDiff}`)
+let totalCountOneJoltDiffs = 0
+let totalCountThreeJoltDiffs = 0
+let countContiguousOneJoltDiffs = 0
+let countValidAdapterChains = 1
+for (let i = 1; i < adapters.length; i++) {
+    const adapter = adapters[i]
+    const prevAdapter = adapters[i - 1]
+    const diff = adapter - prevAdapter;
+    // console.log(diff)
+    if (diff == 1) {
+        totalCountOneJoltDiffs++
+        countContiguousOneJoltDiffs++
+    }
+    if (diff == 3) {
+        totalCountThreeJoltDiffs++
+        if (countContiguousOneJoltDiffs == 4) {
+            countValidAdapterChains *= 7
+        }
+        if (countContiguousOneJoltDiffs == 3) {
+            countValidAdapterChains *= 4
+        }
+        if (countContiguousOneJoltDiffs == 2) {
+            countValidAdapterChains *= 2
+        }
+        countContiguousOneJoltDiffs = 0
+    }
+}
+
+console.log(`Part 1: ${totalCountOneJoltDiffs} * ${totalCountThreeJoltDiffs} = ${totalCountOneJoltDiffs * totalCountThreeJoltDiffs}`)
+console.log(`Part 2: count valid adapter chains = ${countValidAdapterChains}`)
